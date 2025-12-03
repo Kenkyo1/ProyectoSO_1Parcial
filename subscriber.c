@@ -8,7 +8,6 @@
 #define BROKER_PORT 5000
 #define BUFFER_SIZE 1024
 
-// Función para enviar la petición de suscripción
 void subscribe_to(int sock, char *topic) {
     char sub_msg[BUFFER_SIZE];
     // Protocolo: SUB|TOPICO|
@@ -18,7 +17,6 @@ void subscribe_to(int sock, char *topic) {
 }
 
 int main(int argc, char *argv[]) {
-    // Verificamos que el usuario ingrese el tópico al ejecutar
     if (argc != 2) {
         printf("Uso incorrecto.\n");
         printf("Ejecutar como: ./subscriber <TOPICO_A_ESCUCHAR>\n");
@@ -52,13 +50,11 @@ int main(int argc, char *argv[]) {
     printf("****************************************\n");
     printf("[SUBSCRIBER INICIADO]\n");
     
-    // Nos suscribimos SOLAMENTE al tópico pasado por argumento
     subscribe_to(sock, my_topic);
 
     printf("Esperando datos de %s...\n", my_topic);
     printf("****************************************\n");
 
-    // Bucle de lectura
     while (1) {
         int bytes_read = recv(sock, buffer, BUFFER_SIZE - 1, 0);
         if (bytes_read <= 0) {
@@ -67,7 +63,6 @@ int main(int argc, char *argv[]) {
         }
         buffer[bytes_read] = '\0';
 
-        // Parseo visual del mensaje recibido
         char *first_pipe = strchr(buffer, '|');
         if (first_pipe) {
             char *second_pipe = strchr(first_pipe + 1, '|');
@@ -78,7 +73,6 @@ int main(int argc, char *argv[]) {
                 char *topic = first_pipe + 1;
                 char *payload = second_pipe + 1;
 
-                // Solo mostramos si realmente es el tópico (seguridad extra visual)
                 if (strcmp(topic, my_topic) == 0) {
                     printf("\n[NUEVO DATO RECIBIDO]\n");
                     printf(" > Tópico: %s\n", topic);
